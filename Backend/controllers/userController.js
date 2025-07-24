@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import bcryptjs from "bcryptjs";
+import bcrypt from "bcryptjs";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import createToken from "../utils/createToken.js";
 
@@ -34,4 +34,29 @@ const createUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { createUser };
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const existingUser = await User.findOne({ email });
+
+  if (!existingUser) {
+    return res.status(401).json({ message: "User Not Found" });
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Invalid Password" });
+  }
+
+  createToken(res, existingUser._id);
+
+  res.status(200).json({
+    _id: existingUser._id,
+    username: existingUser.username,
+    email: existingUser.email,
+    isAdmin: existingUser.isAdmin,
+  });
+});
+
+export { createUser, loginUser };
