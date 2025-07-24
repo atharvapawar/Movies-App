@@ -3,23 +3,23 @@ import mongoose from "mongoose";
 const userSchema = mongoose.Schema(
   {
     username: {
-      Types: String,
+      type: String,
       required: true,
     },
 
     email: {
-      Types: String,
+      type: String,
       required: true,
       unique: true,
     },
 
     password: {
-      Types: String,
+      type: String,
       required: true,
     },
 
     isAdmin: {
-      Types: Boolean,
+      type: Boolean,
       required: true,
       default: false,
     },
@@ -28,3 +28,5 @@ const userSchema = mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
+
+export default User
